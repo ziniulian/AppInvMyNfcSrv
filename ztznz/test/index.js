@@ -21,6 +21,7 @@ r.ro.use(require("cookie-session")({
 	keys: ["lzr'sJob:inv"],
 	maxAge: 3600000
 }));
+r.hdPost("/push/");
 r.post("/push/", function (req, res, next) {
 	try {var o = undefined;
 	try {
