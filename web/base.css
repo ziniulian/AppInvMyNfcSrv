@@ -1,0 +1,170 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	font-family: "Microsoft YaHei";
+	font-size: 24px;
+	font-size: 2vw;
+	color: #333;
+	background-color: #FF0;
+}
+
+/*取消a链接默认样式*/
+a{
+	text-decoration:none;
+	color: #00F;
+}
+a:hover {
+	font-weight: bold;
+}
+
+/*取消下拉框、输入框默认样式*/
+select, input, textarea {
+	border: none;
+	outline: medium;
+	font-size: 1rem;
+	background-color: #FF0;
+}
+
+table, tbody, tr {
+	width: 100%;
+}
+
+tr:hover {
+	/* background-color: #EEE; */
+	background-color: #FF6;
+}
+
+tr {
+	line-height: 1.5;
+	text-align: right;
+}
+
+hr {
+	border-color: #F00;
+}
+
+.logo {
+	position: relative;
+	padding-right: 3.5rem;
+	margin-bottom: 1rem;
+	height: 3rem;
+	line-height: 3rem;
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-clip: padding-box;
+	background-size: contain;
+	background-image: url(/favicon.ico);
+	border-bottom: 0.2rem solid #F00;
+}
+
+.logo table {
+	height: 100%;
+}
+
+.logohome {
+	position: absolute;
+	display: block;
+	width: 3rem;
+	height: 3rem;
+	top: 0;
+	right: 0;
+}
+
+.mark {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.8);
+	z-index: 100;
+	color: #FFF;
+	text-align: center;
+	font-size: 3rem;
+}
+
+.txtBox {
+	display: block;
+	width: 80%;
+	height: 15rem;
+	margin: 0 auto;
+	border: 0.2rem solid #F00;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.k {
+	width: 38.2%;
+	text-align: right;
+	line-height: 3;
+}
+
+.v {
+	text-align: left;
+	line-height: 3;
+}
+
+.vTxt {
+	width: 61.8%;
+	border-bottom: 0.1rem solid #F00;
+}
+
+.l {
+	text-align: left;
+}
+
+.c {
+	text-align: center;
+}
+
+.r {
+	text-align: right;
+}
+
+.memo {
+	cursor: pointer;
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
+	/* padding: 1rem; */
+	/* background-color: #FFF; */
+	color: #F00;
+}
+
+/*---------------------- 公共样式库 ----------------------*/
+
+/*设置元素不可见*/
+.Lc_nosee {
+	display: none !important;
+}
+
+.Lc_hid {
+	visibility: hidden;
+}
+
+/*设置元素不能被选中*/
+.Lc_noselect {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/*取消安卓的默认选项*/
+.Lc_noadr {
+	outline: none;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+	-webkit-focus-ring-color: rgba(0, 0, 0, 0);
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+}
+
+/*<pre> 自动换行*/
+.Lc_preAutoLine {
+    white-space: pre-wrap; /*css-3*/
+    white-space: -moz-pre-wrap; /*Mozilla,since1999*/
+    white-space: -pre-wrap; /*Opera4-6*/
+    white-space: -o-pre-wrap; /*Opera7*/
+    word-wrap: break-word; /*InternetExplorer5.5+*/
+}

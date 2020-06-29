@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>登录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="/base.css">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+
+		<style type="text/css">
+			select, input {
+				background-color: #FFF;
+			}
+			html, body {
+				background-color: #FFF;
+			}
+			.boso {
+				text-align: center;
+				font-size: 1.6rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<br/>兰州远望 NFC 标签管理<br/>
+			<br/><input id="unamDom" type="text" placeholder="请输入用户名" onfocus="this.select();" onchange="dco.push();"/>
+			<br/><input id="pwdDom" type="password" placeholder="请输入密码" onfocus="this.select();" onchange="dco.push();"/>
+			<br/><br/><a href="javascript:dco.push();">登 录</a>
+			<div id="memoDom" class="memo"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		LZR.load([
+			"LZR.HTML.Base.Doe.Memo"
+		]);
+
+		var dco = {
+			err: {{=it.tmpo.err || false}},
+			rout: "{{=it.tmpo.url.rout}}",
+			memo: new LZR.HTML.Base.Doe.Memo({doe: memoDom}),
+
+			init: function () {
+				if (dco.err) {
+					dco.memo.show("用户名或密码错误！");
+				}
+				unamDom.focus();
+			},
+
+			push: function () {
+				var u, p;
+				u = unamDom.value;
+				if (u) {
+					p = pwdDom.value;
+					if (p) {
+						location.href = dco.rout + "signIn/" + u + "/" + p + "/";
+					} else {
+						dco.memo.show("密码不能为空！");
+						pwdDom.focus();
+					}
+				} else {
+					dco.memo.show("用户名不能为空！");
+					unamDom.focus();
+				}
+			}
+		};
+
+		document.body.onload = dco.init;
+	</script>
+</html>

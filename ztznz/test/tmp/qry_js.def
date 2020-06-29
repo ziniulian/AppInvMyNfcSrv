@@ -1,0 +1,108 @@
+<script type="text/javascript">
+    var dco = {
+        init: function () {
+            var r;
+            switch (mtDom.value) {
+                case "add":
+                    r = "添加" + ({{=it.tmpo.qry.ok}} ? "成功" : "失败");
+                    break;
+                case "set":
+                    r = "修改" + ({{=it.tmpo.qry.ok}} ? "成功" : "失败");
+                    break;
+                case "del":
+                    r = "删除" + ({{=it.tmpo.qry.ok}} ? "成功" : "失败");
+                    break;
+                case "clear":
+                    r = "清除" + ({{=it.tmpo.qry.ok}} ? "成功" : "失败");
+                    break;
+                case "drop":
+                    r = "销毁" + ({{=it.tmpo.qry.ok}} ? "成功" : "失败");
+                    break;
+        		case "count":
+                    r = "总计 ： " + {{=it.tmpo.qry.total}};
+        			break;
+        		case "pag":
+                    {{? it.comDbSrvReturn.length <= 0}}
+                        r = "无数据";
+                    {{?}}
+        			break;
+            }
+            if (r) {
+                dco.memo(r);
+            }
+        },
+
+        add: function () {
+            qryFmDom.action = "{{=it.tmpo.url.rout}}qryAddOne/{{=it.tmpo.url.dot}}/";
+            mtDom.value = "add";
+            qryFmDom.submit();
+        },
+
+        clear: function () {
+            mtDom.value = "clear";
+            qryFmDom.submit();
+        },
+
+        del: function (id) {
+            mtDom.value = "del";
+            contDom.value = id;
+            qryFmDom.submit();
+        },
+
+        drop: function () {
+            mtDom.value = "drop";
+            qryFmDom.submit();
+        },
+
+        set: function (id) {
+            qryFmDom.action = "{{=it.tmpo.url.rout}}qryAddOne/{{=it.tmpo.url.dot}}/";
+            mtDom.value = "set";
+            contDom.value = id;
+            qryFmDom.submit();
+        },
+
+        pre: function (v) {
+            if (v) {
+                mtDom.value = "pag";
+                smDom.value = -1;
+                vDom.value = v;
+                qryFmDom.submit();
+            }
+        },
+
+        next: function (v) {
+            if (v) {
+                mtDom.value = "pag";
+                smDom.value = 1;
+                vDom.value = v;
+                qryFmDom.submit();
+            }
+        },
+
+        first: function (v) {
+            mtDom.value = "pag";
+            smDom.value = 0;
+            vDom.value = v || "";
+            qryFmDom.submit();
+        },
+
+        mpag: function (v) {
+            mtDom.value = "mpag";
+            vDom.value = v;
+            qryFmDom.submit();
+        },
+
+		memoTid: 0,
+		memoDoe: memoDom,
+		memo: function (msg, tim) {
+			clearTimeout(dco.memoTid);
+			if (msg) {
+				dco.memoDoe.innerHTML = msg;
+				dco.memoTid = setTimeout(dco.memoHid, (tim || 3000));
+			}
+		},
+		memoHid: function () {
+			dco.memoDoe.innerHTML = "";
+		}
+    };
+</script>

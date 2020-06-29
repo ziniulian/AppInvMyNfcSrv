@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>领料</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="/base.css">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+
+		<style type="text/css">
+			tr {
+				text-align: center;
+			}
+			tr:hover {
+				background-color: inherit;
+			}
+			.logo {
+				padding: 0;
+				background-image: none;
+			}
+			select, input {
+				background-color: #FFF;
+			}
+			html, body {
+				background-color: #FFF;
+			}
+			.memo {
+				position: absolute;
+				bottom: auto;
+				top: -3rem;
+				background-color: #FFF;
+			}
+
+			.floor {
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				height: 2.5rem;
+				line-height: 2.5rem;
+				border-top: 0.2rem solid #F00;
+				background-color: #FFF;
+			}
+			#snDom {
+				width: 100%;
+			}
+			.num {
+				position: absolute;
+				right: 0.5rem;
+			}
+			.timout {
+				color: #F00;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<input id="uidDom" type="text" placeholder="领用人工号" onfocus="this.select();"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input id="namDom" type="text" placeholder="领用人姓名" onfocus="this.select();"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript: dco.push();">提交</a>
+				<span id="numDom" class="num">0</span>
+			</div>
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<th class="c" width="50%">序列号</th>
+							<th class="c">时间</th>
+							<th width="10%"></th>
+							<th></th>
+						</tr>
+					</tbody>
+					<tbody id="tbDom">
+					</tbody>
+				</table>
+				<br/><br/><br/><br/>
+			</div>
+			<div class="floor">
+				<input id="snDom" type="text" placeholder="请输入序列号" onchange="dco.crt(this.value);" onfocus="this.select();"/>
+				<div id="memoDom" class="memo"></div>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		LZR.load([
+			"LZR.Base.Time",
+			"LZR.Base.Json",
+			"LZR.HTML.Base.Ajax",
+			"LZR.HTML.Base.Doe.Memo"
+		]);
+
+		var dco = {
+			utTim: LZR.getSingleton(LZR.Base.Time),
+			utJson: LZR.getSingleton(LZR.Base.Json),
+			ajx:  new LZR.HTML.Base.Ajax(),
+			memo: new LZR.HTML.Base.Doe.Memo({doe: memoDom}),
+			total: 0,
+			curSn: "",
+			dat: {},
+
+			init: function () {
+				snDom.focus();
+				var d = new Date();
+				dco.week = dco.utTim.getWeek(d);
+				dco.year = d.getFullYear() % 100;
+			},
+
+			check: function (v) {
+				var r = "";
+				if (v.length > 12) {
+					var y = v.substr(8,2) - 0;
+					var w = v.substr(10,2) - 0;
+					y ++;
+					if ((y < dco.year) || ((y === dco.year) && w <= dco.week)) {
+						dco.memo.show("已过期！" + v);
+						r = "timout";
+					}
+				}
+				return r;
+			},
+
+			crt: function (v) {
+				if (v) {
+					var o, d, a;
+					a = v.length;
+					o = dco.curSn.length;
+					if (a < 9 && o > 8) {
+						v = dco.curSn.substr(0, o - a) + v;
+					}
+					dco.curSn = v;
+
+					if (dco.dat[v]) {
+						o = dco.dat[v];
+					} else {
+						o = {
+							sn: v,
+							tim: dco.utTim.format(new Date, "datetim3"),
+							doe: document.createElement("tr")
+						};
+						o.doe.className = dco.check(v);
+						d = document.createElement("td");
+						d.innerHTML = v;
+						o.doe.appendChild(d);
+
+						d = document.createElement("td");
+						d.innerHTML = dco.utTim.formatStr(o.tim, "S1");
+						o.doe.appendChild(d);
+
+						d = document.createElement("td");
+						a = document.createElement("a");
+						a.innerHTML = "删除";
+						a.href = "javascript: dco.del(\"" + v + "\")";
+						d.appendChild(a);
+						o.doe.appendChild(d);
+
+						dco.dat[v] = o;
+						dco.total ++;
+						numDom.innerHTML = dco.total;
+					}
+
+					if (tbDom.childNodes.length) {
+						tbDom.insertBefore(o.doe, tbDom.childNodes[0]);
+					} else {
+						tbDom.appendChild(o.doe);
+					}
+
+				}
+				snDom.value = "";
+			},
+
+			del: function (sn) {
+				var o = dco.dat[sn];
+				if (o) {
+					tbDom.removeChild(o.doe);
+					delete dco.dat[sn];
+					dco.total --;
+					numDom.innerHTML = dco.total;
+				}
+			},
+
+			push: function () {
+				var u = uidDom.value;
+				var n = namDom.value;
+				if (dco.total) {
+					if (u) {
+						if (n) {
+							if (u.match(/^\d{5}$/)) {
+								var s, r, o = [];
+								for (s in dco.dat) {
+									t  = dco.dat[s];
+									o.push ({
+										sn: t.sn,
+										tim: t.tim,
+										stu: "领料",
+										nam: n,
+										uid: u,
+										opNam: "{{=it.tmpo.usr.nam}}",
+										opUid: "{{=it.tmpo.usr.uid}}"
+									});
+								}
+
+								r = dco.utJson.toObj(dco.ajx.post("{{=it.tmpo.url.rout}}push/", "o=" + dco.utJson.toJson(o)));
+								if (r.ok) {
+									location.href = "{{=it.tmpo.url.rout}}hom/";
+								} else {
+									dco.memo.show("提交失败！");
+								}
+							} else {
+								dco.memo.show("工号必须为五位数字！");
+							}
+						} else {
+							dco.memo.show("领用人姓名不能为空！");
+						}
+					} else {
+						dco.memo.show("领用人工号不能为空！");
+					}
+				}
+			}
+		};
+
+		document.onkeyup = function (e) {
+			if (e.keyCode === 13) {
+				snDom.focus();
+			}
+		};
+		document.body.onload = dco.init;
+	</script>
+</html>

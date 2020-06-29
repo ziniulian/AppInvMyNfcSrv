@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>数据库</title>
+		{{#def.meta}}
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<a class="logohome" target="_blank" href="/"></a>
+			</div>
+			<form id="qryFmDom" action="{{=it.tmpo.url.base}}/" method="post" target="_self">
+				{{#def.qrypro}}
+				<input id="markDom" type="hidden" name="mark" value='{"sn":1, "tim":1, "stu":1, "nam":1}'/>
+				<input id="contDom" type="hidden" name="cont" value="{}"/>
+			</form>
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<td class="c">
+								<a href="javascript: dco.drop();">销毁</a>
+							</td>
+							<td class="c">
+								<a href="javascript: dco.add();">添加</a>
+							</td>
+						</tr>
+						<tr>
+							<td class="c">
+								<a href="javascript: dco.clear();">清除</a>
+							</td>
+							<td class="c">
+								<a href="javascript: dco.first();">重置</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br />
+			{{? it.comDbSrvReturn.length > 0}}
+				<div>
+					<table>
+						<td class="c" width="50%">
+							{{? it.tmpo.qry.sm === 1}}
+								<a href="javascript: dco.pre('{{=it.comDbSrvReturn[0][it.tmpo.qry.k]}}');">上一页</a>
+							{{?}}
+						</td>
+						<td class="c" width="50%">
+							{{? it.comDbSrvReturn.length > it.tmpo.qry.size}}
+								<a href="javascript: dco.next('{{=it.comDbSrvReturn[it.tmpo.qry.size][it.tmpo.qry.k]}}');">下一页</a>
+							{{?}}
+						</td>
+					</table>
+				</div>
+				<br />
+				<div>
+					<table>
+						<tbody>
+							<tr>
+								<th>序列号</th>
+								<th>时间</th>
+								<th>操作</th>
+								<th>操作人</th>
+								<th width="10%"></th>
+								<th width="10%"></th>
+							</tr>
+						</tbody>
+						<tbody>
+							{{~it.comDbSrvReturn:o:i}}
+								{{? i < it.tmpo.qry.size}}
+									<tr>
+										<td>{{=o.sn || ""}}</td>
+										<td>{{=o.tim || ""}}</td>
+										<td>{{=o.stu || ""}}</td>
+										<td>{{=o.nam || ""}}</td>
+										<td class="c">
+											<a href="javascript: dco.set('{{=o._id}}');">修改</a>
+										</td>
+										<td class="c">
+											<a href="javascript: dco.del('{{=o._id}}');">删除</a>
+										</td>
+									</tr>
+								{{?}}
+							{{~}}
+						</tbody>
+					</table>
+				</div>
+				<br />
+				<div>
+					<table>
+						<td class="c" width="50%">
+							{{? it.tmpo.qry.sm === 1}}
+								<a href="javascript: dco.pre('{{=it.comDbSrvReturn[0][it.tmpo.qry.k]}}');">上一页</a>
+							{{?}}
+						</td>
+						<td class="c" width="50%">
+							{{? it.comDbSrvReturn.length > it.tmpo.qry.size}}
+								<a href="javascript: dco.next('{{=it.comDbSrvReturn[it.tmpo.qry.size][it.tmpo.qry.k]}}');">下一页</a>
+							{{?}}
+						</td>
+					</table>
+				</div>
+			{{?}}
+			<div id="memoDom" class="memo"></div>
+		</div>
+	</body>
+
+	{{#def.qry_js}}
+	<script type="text/javascript">
+		document.body.onload = dco.init;
+	</script>
+</html>

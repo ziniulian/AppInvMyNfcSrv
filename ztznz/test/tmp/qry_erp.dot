@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ERP查询</title>
+		{{#def.meta}}
+
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+
+		<style type="text/css">
+			tr {
+				text-align: center;
+			}
+			tr:hover {
+				background-color: inherit;
+			}
+			.logo {
+				padding: 0;
+				background-image: none;
+			}
+			select, input {
+				background-color: #FFF;
+			}
+			html, body {
+				background-color: #FFF;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<input id="dateDom" type="date" onchange="dco.secTim(this.value);"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input id="enDom" type="text" placeholder="ERP单号搜索" onchange="dco.secEn(this.value);" onfocus="this.select();"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript: dco.secDel();">清空</a>
+			</div>
+			<form id="qryFmDom" action="{{=it.tmpo.url.base}}/" method="post" target="_self">
+				{{#def.qrypro}}
+				<input id="markDom" type="hidden" name="mark" value='{"erp":1, "tim":1, "total":1}'/>
+				<input id="contDom" type="hidden" name="cont" value="{}"/>
+			</form>
+			<br />
+			{{? it.comDbSrvReturn.length > 0}}
+				<div>
+					<table>
+						<td class="c" width="50%">
+							{{? it.tmpo.qry.sm === 1}}
+								<a href="javascript: dco.pre('{{=it.comDbSrvReturn[0][it.tmpo.qry.k]}}');">上一页</a>
+							{{?}}
+						</td>
+						<td class="c" width="50%">
+							{{? it.comDbSrvReturn.length > it.tmpo.qry.size}}
+								<a href="javascript: dco.next('{{=it.comDbSrvReturn[it.tmpo.qry.size][it.tmpo.qry.k]}}');">下一页</a>
+							{{?}}
+						</td>
+					</table>
+				</div>
+				<br />
+				<div>
+					<table>
+						<tbody>
+							<tr>
+								<th class="c" width="42%">ERP单号</th>
+								<th class="c">时间</th>
+								<th class="c">发货数量</th>
+							</tr>
+						</tbody>
+						<tbody>
+							{{~it.comDbSrvReturn:o:i}}
+								{{? i < it.tmpo.qry.size}}
+									<tr>
+										<td title="{{=o._id || ""}}"><a target="_blank" href='{{=it.tmpo.url.rout}}qry_erpInfo/?en={{=o.erp}}'>{{=o.erp || ""}}</a></td>
+										<td>{{=(o.tim ? (it.tmpo.tls.utTim.formatStr(o.tim, "S1")) : "")}}</td>
+										<td>{{=o.total || ""}}</td>
+									</tr>
+								{{?}}
+							{{~}}
+						</tbody>
+					</table>
+				</div>
+				<br />
+				<div>
+					<table>
+						<td class="c" width="50%">
+							{{? it.tmpo.qry.sm === 1}}
+								<a href="javascript: dco.pre('{{=it.comDbSrvReturn[0][it.tmpo.qry.k]}}');">上一页</a>
+							{{?}}
+						</td>
+						<td class="c" width="50%">
+							{{? it.comDbSrvReturn.length > it.tmpo.qry.size}}
+								<a href="javascript: dco.next('{{=it.comDbSrvReturn[it.tmpo.qry.size][it.tmpo.qry.k]}}');">下一页</a>
+							{{?}}
+						</td>
+					</table>
+				</div>
+				<br />
+			{{?}}
+			<div id="memoDom" class="memo"></div>
+		</div>
+	</body>
+
+	{{#def.qry_js}}
+	<script type="text/javascript">
+		LZR.load([
+			"LZR.Base.Time",
+			"LZR.Base.Json"
+		]);
+		dco.utTim = LZR.getSingleton(LZR.Base.Time);
+		dco.utJson = LZR.getSingleton(LZR.Base.Json);
+
+        dco.secTim = function (s) {
+			if (s) {
+				s = s.replace(/-/g, "");
+				dco.sec.tim = {
+					"$gte": s + "000000",
+					"$lte": s + "235959"
+				};
+			} else {
+				delete(dco.sec.tim);
+			}
+			condDom.value = dco.utJson.toJson(dco.sec);
+			dco.first();
+        };
+
+        dco.secEn = function (en) {
+			if (en) {
+				dco.sec.erp = {
+					"$regex": en
+				};
+			} else {
+				delete(dco.sec.erp);
+			}
+			condDom.value = dco.utJson.toJson(dco.sec);
+			dco.first();
+        };
+
+        dco.secDel = function () {
+			condDom.value = "{\"erp\":{\"$exists\":true}}";
+			dco.first();
+        };
+
+		dco.secInit = function () {
+			dco.sec = dco.utJson.toObj(condDom.value);
+			if (dco.sec.tim) {
+				dateDom.value = dco.utTim.formatStr(dco.sec.tim.$gte, "S2");
+			}
+			if (dco.sec.erp) {
+				enDom.value = dco.sec.erp.$regex || "";
+			}
+		};
+
+		document.body.onload = dco.init;
+		dco.secInit();
+	</script>
+</html>

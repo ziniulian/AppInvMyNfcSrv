@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			{{? it.tmpo.qry.mt === "add"}}
+				添加
+			{{??}}
+				修改
+			{{?}}
+			数据
+		</title>
+		{{#def.meta}}
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<a class="logohome" target="_self" href="{{=it.tmpo.url.rout}}qry_base/"></a>
+			</div>
+			<form id="qryFmDom" action="{{=it.tmpo.url.rout}}{{=it.tmpo.qry.bck}}/" method="post" target="_self">
+				{{#def.qrypro}}
+				<input id="markDom" type="hidden" name="mark" value='{{=it.tmpo.qry.mark}}'/>
+				<input type="hidden" name="id" value="{{=it.tmpo.qry.id}}"/>
+
+				<div>
+					<textarea id="contDom" type="textarea" name="cont" class="txtBox" placeholder="JSON">
+						{{? it.tmpo.qry.mt === "set"}}
+							{{? it.comDbSrvReturn.length > 0}}
+								{{=it.tmpo.tls.utJson.toJson(it.comDbSrvReturn[0])}}
+							{{?}}
+						{{?}}
+					</textarea>
+				</div>
+				<br/>
+				<div class="c">
+					<a href="javascript: dco.check();">语法检查</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					{{? it.tmpo.qry.mt === "add"}}
+						<a href="javascript: dco.add();">-- 添加 --</a>
+					{{??}}
+						<a href="javascript: dco.add();">-- 修改 --</a>
+					{{?}}
+				</div>
+			</form>
+			<div id="memoDom" class="memo"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		var dco = {
+			check: function () {
+				var o;
+				try {
+					o = JSON.parse(contDom.value);
+				} catch (e) {}
+				console.log (o);
+				if (o) {
+					dco.memo("语法正确");
+					return true;
+				} else {
+					dco.memo("语法错误");
+					return false;
+				}
+			},
+			add: function () {
+				if (contDom.value) {
+					if (dco.check(contDom.value)) {
+						qryFmDom.submit();
+					}
+				} else {
+					dco.memo("不能为空");
+				}
+			},
+
+			memoTid: 0,
+			memoDoe: memoDom,
+			memo: function (msg, tim) {
+				clearTimeout(dco.memoTid);
+				dco.memoDoe.innerHTML = msg;
+				dco.memoTid = setTimeout(dco.memoHid, (tim || 3000));
+			},
+			memoHid: function () {
+				dco.memoDoe.innerHTML = "";
+			}
+		};
+	</script>
+</html>

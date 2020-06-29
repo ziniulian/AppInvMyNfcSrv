@@ -1,0 +1,10 @@
+<!-- 分页查询参数 -->
+<input id="mtDom" type="hidden" name="mt" value="{{=it.tmpo.qry.mt}}"/>
+<input id="tnDom" type="hidden" name="tn" value="{{=it.tmpo.qry.tn}}"/>
+<input id="sizeDom" type="hidden" name="size" value="{{=it.tmpo.qry.size}}"/>
+<input id="sortDom" type="hidden" name="sort" value="{{=it.tmpo.qry.sort}}"/>
+<input id="kDom" type="hidden" name="k" value='{{=it.tmpo.qry.k}}'/>
+<input id="vDom" type="hidden" name="v" value="{{=it.tmpo.qry.v}}"/>
+<input id="smDom" type="hidden" name="sm" value="{{=it.tmpo.qry.sm}}"/>
+<input id="totalDom" type="hidden" name="total" value="{{=it.tmpo.qry.total}}"/>
+<input id="condDom" type="hidden" name="cond" value='{{=it.tmpo.qry.cond}}'/>

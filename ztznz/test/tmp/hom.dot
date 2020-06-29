@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>主页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="/base.css">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+
+		<style type="text/css">
+			select, input {
+				background-color: #FFF;
+			}
+			html, body {
+				background-color: #FFF;
+			}
+			.boso {
+				text-align: center;
+			}
+			.bfs {
+				font-size: 1.6rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<br/><span class="bfs">{{=it.tmpo.usr.nam}}</span>
+			<hr/>
+			{{~it.tmpo.usr.cls:n:i}}
+				{{? (n === 4)}}
+					<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}out/">出货</a>
+					<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}qry_erp/">ERP查询</a>
+					<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}lend/">领料</a>
+					<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}rtn/">归还</a>
+				{{?}}
+				{{? n === 2}}
+					<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}qry_base/">数据库</a>
+				{{?}}
+			{{~}}
+			<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}qry_nfc/">数据查询</a>
+			<br/><br/><a href="{{=it.tmpo.url.rout}}signOut/">登 出</a>
+			<div id="memoDom" class="memo"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+	</script>
+</html>
