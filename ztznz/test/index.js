@@ -8,9 +8,38 @@ var tools = {
 	utTim: LZR.getSingleton(LZR.Base.Time),
 	clsR: LZR.Node.Srv.Result,
 	conf: {},
+	ex: function () {
+		try {
+			if (LZR.Tmpt && LZR.Tmpt[0] && LZR.Tmpt[0].router && LZR.Tmpt[0].router.use && LZR.Tmpt[0].router.use.NFC) {
+				var s, o, f, ot = LZR.Tmpt[0].router.use.NFC;
+				for (s in ot) {
+					o = ot[s];
+					f = "get";
+					if (o.mathod === "POST") {
+						f = "post";
+					}
+					r[f]("/" + s + "/", LZR.bind(o, function(req, res, next) {
+						try {
+							if (this.res && this.res.then) {
+								this.res.then({
+									req: req,
+									res: res,
+									usr: req.session.usr
+								}, next, tools.qryRo.db);
+							} else {
+								next();
+							}
+						} catch (e) {
+							next();
+						}
+					}));
+				}
+			}
+		} catch (e) {}
+	},
 	qryRo: new LZR.Node.Router.QryTmp({
 		ro: r,
-		conf: ("mongodb://192.169.0.150:27017/invTest"),
+		conf: ("mongodb://localhost:27017/invTest"),
 		defTnam: "nfc",
 		pvs: {_id: 2,sn: 0,tim: 0,}
 	}),
@@ -172,6 +201,7 @@ tools.tmpRo.initTmp("/", "tmp", {
 	utJson: tools.utJson,
 	utTim: tools.utTim
 });
+tools.ex();
 r.get("*", function (req, res, next) {
 	res.redirect(req.baseUrl + "/hom/");
 });

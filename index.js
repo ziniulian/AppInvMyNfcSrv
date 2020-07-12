@@ -77,7 +77,7 @@ require("ztznz").star({
 				res: "404"
 			}
 		},
-		port: 888
+		port: 80
 	},
 	dot: {
 		qry: {
@@ -156,6 +156,34 @@ require("ztznz").star({
 		},
 		qry_js: function (tmp) {
 			return tmp.mode.qryFun.body();
+		}
+	}
+}, {
+	router: {
+		use: {
+			NFC: {
+				otherTest: {
+					res: {
+						then: function (r, next) {
+							r.res.send("Hello World!");
+						}
+					}
+				},
+				otherTestUsr: {
+					res: {
+						then: function (r, next) {
+							r.res.json(r.usr);
+						}
+					}
+				},
+				otherTestDb: {
+					res: {
+						then: function (r, next, db) {
+							db.get(r.req, r.res, next, {"conf":{"$exists":true}}, {"_id":0});
+						}
+					}
+				}
+			}
 		}
 	}
 });
