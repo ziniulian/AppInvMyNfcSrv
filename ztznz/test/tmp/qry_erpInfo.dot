@@ -28,6 +28,10 @@
 		<div id="boso" class="boso">
 			<div  class="logo">
 				ERP单号 ： <span id="enDom"></span>
+				{{?it.tmpo.exp}}
+					&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+					<a id="expDom" target="_blank">导出</a>
+				{{?}}
 			</div>
 			<form id="qryFmDom" action="{{=it.tmpo.url.base}}/" method="post" target="_self">
 				{{#def.qrypro}}
@@ -96,8 +100,9 @@
 
 	{{#def.qry_js}}
 	<script type="text/javascript">
-		document.body.onload = dco.init;
 		dco.en = {{=it.tmpo.qry.cond}};
 		enDom.innerHTML = dco.en.en;
+		expDom.href = "{{=it.tmpo.url.rout}}expErp/" + dco.en.en + "/";
+		document.body.onload = dco.init;
 	</script>
 </html>

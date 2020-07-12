@@ -77,7 +77,7 @@ require("ztznz").star({
 				res: "404"
 			}
 		},
-		port: 80
+		port: 888
 	},
 	dot: {
 		qry: {
@@ -107,6 +107,13 @@ require("ztznz").star({
 					title: "ERP单详情",
 					mark: {"sn":1, "tim":1, "nam":1},
 					map: {"sn":"序列号", "tim":"时间", "nam":"操作人"}
+				});
+			},
+			exp: function (tmp) {
+				return tmp.base({
+					title: "数据导出",
+					mark: {"sn":1, "tim":1, "stu":1, "nam":1},
+					map: {"sn":"序列号", "tim":"时间", "stu":"操作", "nam":"操作人"}
 				});
 			}
 		},
@@ -156,34 +163,6 @@ require("ztznz").star({
 		},
 		qry_js: function (tmp) {
 			return tmp.mode.qryFun.body();
-		}
-	}
-}, {
-	router: {
-		use: {
-			NFC: {
-				otherTest: {
-					res: {
-						then: function (r, next) {
-							r.res.send("Hello World!");
-						}
-					}
-				},
-				otherTestUsr: {
-					res: {
-						then: function (r, next) {
-							r.res.json(r.usr);
-						}
-					}
-				},
-				otherTestDb: {
-					res: {
-						then: function (r, next, db) {
-							db.get(r.req, r.res, next, {"conf":{"$exists":true}}, {"_id":0});
-						}
-					}
-				}
-			}
 		}
 	}
 });

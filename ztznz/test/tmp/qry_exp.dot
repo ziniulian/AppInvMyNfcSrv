@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>数据导出</title>
+		{{#def.meta}}
+
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+
+		<style type="text/css">
+			tr {
+				text-align: center;
+			}
+			tr:hover {
+				background-color: inherit;
+			}
+			.logo {
+				padding: 0;
+				background-image: none;
+			}
+			select, input {
+				background-color: #FFF;
+			}
+			html, body {
+				background-color: #FFF;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<input id="stimDom" type="date" onchange="dco.secTim();"/>
+				&nbsp; &nbsp; ~ &nbsp; &nbsp;
+				<input id="etimDom" type="date" onchange="dco.secTim();"/>
+				&nbsp; &nbsp; &nbsp; &nbsp;
+				<select id="stuDom" onchange="dco.secStu(this.value);">
+					<option value="生产">生产</option>
+					<option value="QC">QC</option>
+					<option value="出货">出货</option>
+					<option value="领料">领料</option>
+					<option value="归还">归还</option>
+				</select>
+				&nbsp; &nbsp; &nbsp;
+				<input id="snDom" type="text" placeholder="可输入序列号搜索" onchange="dco.secSn(this.value);" onfocus="this.select();"/>
+				&nbsp; &nbsp; &nbsp;
+				<a href="javascript: dco.exp();">导出</a>
+			</div>
+			<form id="qryFmDom" action="{{=it.tmpo.url.base}}/" method="post" target="_self">
+				{{#def.qrypro}}
+				<input id="markDom" type="hidden" name="mark" value='{"sn":1, "tim":1, "stu":1, "nam":1}'/>
+				<input id="contDom" type="hidden" name="cont" value="{}"/>
+			</form>
+			<br />
+			{{? it.comDbSrvReturn.length > 0}}
+				<div>
+					<table>
+						<td class="c" width="50%">
+							{{? it.tmpo.qry.sm === 1}}
+								<a href="javascript: dco.pre('{{=it.comDbSrvReturn[0][it.tmpo.qry.k]}}');">上一页</a>
+							{{?}}
+						</td>
+						<td class="c" width="50%">
+							{{? it.comDbSrvReturn.length > it.tmpo.qry.size}}
+								<a href="javascript: dco.next('{{=it.comDbSrvReturn[it.tmpo.qry.size][it.tmpo.qry.k]}}');">下一页</a>
+							{{?}}
+						</td>
+					</table>
+				</div>
+				<br />
+				<div>
+					<table>
+						<tbody>
+							<tr>
+								<th class="c" width="42%">序列号</th>
+								<th class="c">时间</th>
+								<th class="c">操作</th>
+								<th class="c">操作人</th>
+							</tr>
+						</tbody>
+						<tbody>
+							{{~it.comDbSrvReturn:o:i}}
+								{{? i < it.tmpo.qry.size}}
+									<tr>
+										<td>{{=o.sn || ""}}</td>
+										<td>{{=(o.tim ? (it.tmpo.tls.utTim.formatStr(o.tim, "S1")) : "")}}</td>
+										<td>{{=o.stu || ""}}</td>
+										<td>{{=o.nam || ""}}</td>
+									</tr>
+								{{?}}
+							{{~}}
+						</tbody>
+					</table>
+				</div>
+				<br />
+				<div>
+					<table>
+						<td class="c" width="50%">
+							{{? it.tmpo.qry.sm === 1}}
+								<a href="javascript: dco.pre('{{=it.comDbSrvReturn[0][it.tmpo.qry.k]}}');">上一页</a>
+							{{?}}
+						</td>
+						<td class="c" width="50%">
+							{{? it.comDbSrvReturn.length > it.tmpo.qry.size}}
+								<a href="javascript: dco.next('{{=it.comDbSrvReturn[it.tmpo.qry.size][it.tmpo.qry.k]}}');">下一页</a>
+							{{?}}
+						</td>
+					</table>
+				</div>
+				<br />
+			{{?}}
+			<div id="memoDom" class="memo"></div>
+		</div>
+	</body>
+
+	{{#def.qry_js}}
+	<script type="text/javascript">
+		LZR.load([
+			"LZR.Base.Time",
+			"LZR.Base.Json"
+		]);
+		dco.utTim = LZR.getSingleton(LZR.Base.Time);
+		dco.utJson = LZR.getSingleton(LZR.Base.Json);
+
+		dco.secTim = function () {
+			var s = stimDom.value;
+			var e = etimDom.value;
+			if (s && e) {
+				s = s.replace(/-/g, "");
+				e = e.replace(/-/g, "");
+				dco.sec.tim = {
+					"$gte": s + "000000",
+					"$lte": e + "235959"
+				};
+				condDom.value = dco.utJson.toJson(dco.sec);
+				dco.first();
+			} else {
+				dco.memo("时间段不能为空！");
+			}
+		};
+
+		dco.secSn = function (s) {
+			if (s) {
+				dco.sec.sn = {
+					"$regex": s
+				};
+			} else {
+				delete(dco.sec.sn);
+			}
+			condDom.value = dco.utJson.toJson(dco.sec);
+			dco.first();
+		};
+
+		dco.secStu = function (s) {
+			if (s) {
+				dco.sec.stu = s;
+			} else {
+				delete(dco.sec.stu);
+			}
+			condDom.value = dco.utJson.toJson(dco.sec);
+			dco.first();
+		};
+
+		dco.secInit = function () {
+			dco.sec = dco.utJson.toObj(condDom.value);
+			if (dco.sec.stu) {
+				stuDom.value = dco.sec.stu;
+			}
+			if (dco.sec.tim) {
+				stimDom.value = dco.utTim.formatStr(dco.sec.tim.$gte, "S2");
+				etimDom.value = dco.utTim.formatStr(dco.sec.tim.$lte, "S2");
+			}
+			if (dco.sec.sn) {
+				snDom.value = dco.sec.sn.$regex || "";
+			}
+		};
+
+		dco.exp = function () {
+			if ({{=it.comDbSrvReturn.length}}) {
+				var r = "{{=it.tmpo.url.rout}}exp/" + dco.sec.tim.$gte + "/" + dco.sec.tim.$lte + "/" + dco.sec.stu + "/";
+				if (dco.sec.sn && dco.sec.sn.$regex) {
+					r += dco.sec.sn.$regex + "/";
+				}
+				location.href = r;
+			}
+		};
+
+		document.body.onload = dco.init;
+		dco.secInit();
+	</script>
+</html>

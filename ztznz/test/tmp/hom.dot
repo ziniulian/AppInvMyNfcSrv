@@ -40,6 +40,9 @@
 				{{?}}
 			{{~}}
 			<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}qry_nfc/">数据查询</a>
+			{{?it.tmpo.exp}}
+				<br/><br/><a target="_blank" href="{{=it.tmpo.url.rout}}qry_exp/">数据导出</a>
+			{{?}}
 			<br/><br/><a href="{{=it.tmpo.url.rout}}signOut/">登 出</a>
 			<div id="memoDom" class="memo"></div>
 		</div>
